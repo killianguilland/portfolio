@@ -1,13 +1,15 @@
 import glob from 'fast-glob'
 
+import { StaticImageData } from 'next/image';
+
 interface Article {
   title: string
   description: string
   author: string
   date: string
-  image: string
+  image: StaticImageData | { src: string }
   featured?: boolean
-  illustration?: string
+  illustration?: StaticImageData | { src: string }
 }
 
 export interface ArticleWithSlug extends Article {
