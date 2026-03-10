@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { ContainerInner, ContainerOuter } from '@/components/Container'
+import { useTranslations } from 'next-intl'
 
 function NavLink({
   href,
@@ -20,6 +21,8 @@ function NavLink({
 }
 
 export function Footer() {
+  const tHeader = useTranslations('Header');
+  const t = useTranslations('Footer');
   return (
     <footer className="mt-32 flex-none">
       <ContainerOuter>
@@ -27,14 +30,13 @@ export function Footer() {
           <ContainerInner>
             <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
               <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                <NavLink href="/">Home</NavLink>
-                <NavLink href="/articles">Articles</NavLink>
-                <NavLink href="/projects">Projects</NavLink>
-                <NavLink href="/speaking">Fun stuff</NavLink>
+                <NavLink href="/">{tHeader('home')}</NavLink>
+                <NavLink href="/projects">{tHeader('projects')}</NavLink>
+                <NavLink href="/articles">{tHeader('articles')}</NavLink>
+                <NavLink href="/speaking">{tHeader('fun')}</NavLink>
               </div>
               <p className="text-sm text-zinc-400 dark:text-zinc-500">
-                &copy; {new Date().getFullYear()} Killian Guilland. All rights
-                reserved.
+                &copy; {new Date().getFullYear()} Killian Guilland. {t('copyright')}
               </p>
             </div>
           </ContainerInner>

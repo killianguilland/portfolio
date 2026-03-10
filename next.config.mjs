@@ -9,7 +9,7 @@ const nextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
   outputFileTracingIncludes: {
     '/articles/*': ['./src/app/[locale]/articles/**/*.mdx'],
-  },
+  }
 };
 
 const withMDX = nextMDX({

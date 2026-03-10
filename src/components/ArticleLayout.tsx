@@ -1,6 +1,6 @@
 'use client'
 
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 import { AppContext } from '@/app/providers'
@@ -10,6 +10,7 @@ import { type ArticleWithSlug } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 import Image from 'next/image'
 import { Comments } from './Comments'
+import { useLocale } from 'next-intl'
 
 function ArrowLeftIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -33,6 +34,12 @@ export function ArticleLayout({
 }) {
   let router = useRouter()
   let { previousPathname } = useContext(AppContext)
+  const locale = useLocale();
+
+  // useEffect(() => {
+  //   if(locale == article.locale && article[locl])
+  //     router.replace(`/${locale}/articles`)
+  // }, [article, locale])
 
   return <>
     {article.illustration && <ContainerOuter className='absolute right-0 top-0 left-0'>

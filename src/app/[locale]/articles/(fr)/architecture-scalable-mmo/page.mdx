@@ -1,0 +1,268 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { ImageCompare } from '@/components/ImageCompare'
+import { Slideshow } from '@/components/Slideshow'
+import { Reference } from '@/components/Reference'
+import { Tooltip } from '@/components/Tooltip'
+import { YouTube } from '@/components/Youtube'
+import { Figure } from '@/components/Figure'
+import thumbnail from './thumbnail.jpg'
+import illustration from './illustration.jpg'
+import features from './features.png'
+import admin from './admin.png'
+import architecture from './architecture.png'
+import state from './state.png'
+import routing from './routing.png'
+import graphics from './graphics.png'
+import physics from './physics.png'
+import { slides as wowSlides } from './wow-slideshow/index'
+import { slides as adminSlides } from './admin-slideshow/index'
+import { article as RpgCharacterCreationArticle } from '../../(en)/rpg-character-creation/page.mdx'
+
+export const article = {
+  author: 'Killian Guilland',
+  date: '2023-01-02',
+  title: 'Créer un MMO pour les nuls', //'Créer son propre MMO, pour les nuls', // Comment j'ai fait mon propre MMO : une épopée entre latence, architecture et paranoïa
+  description: `Je me souviendrais toujours de l'émerveillement que j'ai ressenti quand j'ai pris le bateau depuis Tel'drassil jusqu'à Hurlevent pour la première fois. 
+    Depuis ce jour, j'ai été fasciné par les mondes ouverts multijoueurs, et par combien ils peuvent paraître réels et vivants.
+    Mais comme j'allais bientôt le découvrir, c'est une sacrée paire de manches d'en construire un soi-même.
+    Entre synchroniser l'état du monde entre tous les joueurs, empêcher la triche et éviter que le serveur prenne feu :
+je vais vous raconter tous les problèmes que j'ai résolu en créant mon propre MMO.`,
+  image: thumbnail,
+  illustration: illustration,
+  featured: true,
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+*Pour Laura.*
+
+Quand j'étais petit, ma grande sœur m'a fait découvrir World of Warcraft, sans se douter que ce jeu allais me marquer pour très longtemps. 
+Je me souviendrais toujours de l'émerveillement que j'ai ressenti quand j'ai pris le bateau depuis Tel'drassil jusqu'à Hurlevent pour la première fois.
+
+Entouré par tous ces autre joueurs, perdu dans ces régions immenses et remplies de secrets, ça m'a frappé d'un coup : 
+bien que *virtuel*, ce monde me paraissait crédible, vivant, **presque réel**.
+
+<Slideshow slides={wowSlides} subtitle={"Mes captures d'écran de World of Warcraft © Blizzard Entertainment"} />
+
+Et depuis ce jour, j'ai été fasciné par les mondes ouverts multijoueurs. 
+L'idée d'en fabriquer un moi même s'est installée dans un coin de ma tête. 
+Mais j'étais loin de me douter de ce qui m'attendait. Car faire un open world multijoueur, **c'est loin d'être facile**.
+
+Entre synchroniser l'état du monde entre tous les joueurs, empêcher la triche et éviter que le serveur prenne feu :
+je vais vous raconter tous les problèmes que j'ai résolu en crééant Quaartz, mon propre <Tooltip text="Jeu massivement multijoueur en ligne">MMO</Tooltip>.
+
+
+## Choisir mes batailles
+
+Avant de me plonger dans le code, j'ai commencé par définir le scope du jeu. Je suis parti des fonctionnalités auxquelles je tenais à tout prix :
+- **Mouvement en temps réél dans des environnements 3D** : pour maximiser la liberté d'exploration, je voulais des environnements 3D et sans grille de déplacement (à la différence d'un Dofus par exemple).
+- **Monde persistent** : tout doit être enregistré (les objets, joueurs, etc.) pour rester au même endroit après une reconnexion ou un reboot du serveur.
+- **Collisions physiques réalistes** : C'est la feature différenciante de Quaartz. Chaque objet à sa forme, sa masse, avec toutes les possibilités que ça ouvre (*faire dévaler un rocher dans une pente pour surprendre des joueurs en contrebas, pousser un radeau pour qu'il soit emporté par le courant, bloquer un passage en empilant des obstacles, etc*).
+<Image src={features} alt="Screenshots of in-game features" width={672} height={378} placeholder='blur'/>
+- **Pas de triche** : après tout, rien ne peut avoir de valeur dans un MMO si les joueurs commencent à tricher.
+- **Support mobile et web** : pour qu'inviter des amis soit aussi facile que de leur envoyer un lien.
+- **Interface d'administration** : rien ne doit être <Tooltip text="valeur figée dans le code, modifiable uniquement par un développeur.">hard codé</Tooltip>, pour permettre aux admins de modifier et de faire grandir le monde facilement. 
+- **Création de personnage** : j'ai fait un article à part entière sur cette feature **ici ↓**
+
+<Reference article={RpgCharacterCreationArticle} />
+
+Du pain sur la planche, donc ! Pour contrebalancer tout ça, j'ai fait quelques compromis :
+- **Chargement du monde** : j'ai choisi de découper la carte en plusieurs zones de la carte, reliées par des portails. 
+C'était une décision difficile car cela limite la taille des zones. Mais je me suis dit que si je voulais ajouter de grandes zones plus à l'avenir, 
+je pourrais toujours concevoir une système de chargement en chunk en temps voulu.
+- **Esthétique** : j'ai opté pour des modèles low-poly, car ils sont plus rapides à créer, surtout pour un débutant en modélisation comme moi. 
+Ça rend aussi les assets plus légers (important pour un jeu web!) et demande moins de puissance de rendu (pratique pour un jeu sur smartphone).
+- **Design du monde** : pas besoin d'implémenter une génération procédurale : les environnements faits main sont plus gratifiants à explorer de toute façon.
+
+Je ne vous fais pas attendre plus longtemps, voici une rapide démo de deux joueurs se baladant dans le jeu !
+
+<YouTube id={'Vg3EBX3aEQY'} autoplay={true} />
+
+
+
+## Éviter que le serveur ne prenne feu
+
+J'ai longuement réfléchi à la manière de répartir mon code entre le serveur et le client. Côté serveur, en particulier, j'ai mis en place un système conçu pour faciliter la <Tooltip text="Scalabilité verticale : augmenter les capacités du serveur VS Scalabilité horizontale : ajouter des serveurs pour répartir la charge sur plusieurs machines.">scalabilité</Tooltip> à l'avenir.
+La stack technique est divisée en trois blocs :
+
+<Figure src={architecture} alt="Quartz server architecture diagram" caption="Schéma de la stack technique de Quaartz"/>
+
+1. Django est la seule couche ayant un accès direct à la base de données. 
+Il offre un **accès sécurisé aux données** via une API REST et héberge l'interface d'administration qui permet au staff de gérer le monde (j'y reviendrai plus tard). 
+J'ai choisi Django pour son excellent support REST, son outil d'administration automatique très puissant, et tout simplement parce que j'adore travailler avec.
+
+2. Un serveur NodeJS par zone du monde : chaque serveur est dédié à une zone de la carte. 
+Ils reçoivent les entrées des joueurs, calculent la physique du monde (via le moteur Bullet) et mettent à jour les clients en conséquence. 
+Comme ils prennent en charge la partie la plus intensive en calcul, ils sont conçus pour être **facilement distribuables** sur plusieurs machines. 
+Ils appellent régulièrement les endpoints de Django pour sauvegarder l'état du monde via un jeton secret.
+
+3. Le client est une web app qui peut être chargée dans un navigateur ou installée sur mobile. 
+Il est construit avec React et **utilise ThreeJS pour le rendu 3D**. 
+Il envoie les contrôle du joueur au serveur NodeJS, qui lui communique en temps réel l'état de la zone pour l'affichage.
+
+Dans la partie suivante, on va s'intéresser à la façon dont le client ne communique qu'avec le serveur NodeJS de la zone où se trouve le joueur, et est redirigé vers un autre serveur lors d'un changement de zone :
+
+
+
+## Système de routage
+
+<Figure 
+  src={routing} 
+  alt="Quartz shard routing system" 
+  caption="Schéma des étapes d'un changement de zone"
+/>
+
+Sur le schéma ci-dessus, on voit plus en détail comment un joueur passe d'une zone à une autre. 
+
+Pour commencer, il se connecte à la zone 1, donc au serveur NodeJS à <Tooltip text="Le préfixe wss:// signifie qu'on utilise le protocole Websocket sécurisé, tout comme https:// indique le protocole http sécurisé.">l'adresse</Tooltip> `wss://1.quaartz.io`, en envoyant login et mot de passe.
+
+Le serveur l'authentifie, puis vérifie que son personnage est bien dans la zone 1. Ici, ce n'est pas le cas, il répond donc avec un évènement `logout.area-redirect`, et en paramètre, l'id de la zone où le joueur se situe : 3.
+
+En reçevant cette réponse, le client entame une nouvelle connection, cette fois ci vers la bonne zone : `wss://3.quaartz.io`. Il envoie à nouveau un évènement login, comme tout à l'heure.
+
+Le serveur 3 confirme qu'il s'agit bien de la bonne zone, il répond donc avec un premier évenement `area.update` contenant toutes les infos de la zone. Les évènements update suivants contiendront uniquement les changements de la zone : déplacements de personnages, etc.
+
+**Si à un moment, le joueur traverse un portail vers une autre zone** : le serveur va sauvegarder sa nouvelle position via l'api rest de Django, puis déconnecter le client avec un évènement `logout.area-redirect`.
+Vous aurez sans doute remarqué qu'il s'agit de ce qui s'est passsé au début ! On reprend donc tout le cheminement à partir de l'étape 2. 
+
+
+
+## Monde graphique VS monde physique
+
+Petit apparté sur la gestion de la physique du jeu.
+Tout d'abord, j'ai pris la décision de calculer la physique du jeu côté serveur et non côté client, pour éviter la triche. 
+Cela permet d'être sûr que le client ne peut pas mentir sur sa position, mais nous y reviendront plus bas.
+<ImageCompare
+  beforeSrc={graphics} 
+  beforeAlt="Terrain en basse résolution (Low poly)" 
+  beforeLabel="Maillage original"
+  afterSrc={physics} 
+  afterAlt="Terrain après tesselation dynamique sur le GPU" 
+  afterLabel="Tessellation activée"
+  />
+Ensuite, je me suis rapidement rendu compte qu'il était **difficile d'utiliser les modèles 3D visuels pour calculer les collisions**, pour deux raisons : 
+- Il sont beaucoup trop **complexes**. Un objet, même low-poly, peut nécéssiter une centaine de triangles pour être joli. Mais pour le moteur physique, cette complexité est inutile et lui rajoute beaucoup de travail.
+- Certains modèles ne sont **pas navigables**. Prenons l'exemple d'un escalier : il faudrait sauter pour passer chaque marche si on utilisait le modèle visuel. A la place, on préfèrerait avoir une forme de "rampe" pour pouvoir la grimper de manière fluide.
+
+J'ai donc décidé de créer une version alternative de la carte pour les collisions : chaque palmier devient un poteau, un pont constitué d'une dizaines de planches devient un simple parallépipède lisse, et le joueur devient une capsule.
+
+## Faire la guerre au lag
+Dans un monde parfait, chaque joueur recevrait l'état complet du monde avec tous ses objets via un flux ultra-rapide, 60 fois par seconde. 
+C'est ce que j'ai codé au début (c'était le plus simple) mais évidemment, ça s'est vite avéré **beaucoup trop lourd**. 
+Et sur les connexions plus lentes, le volume colossal de données créait des lags massifs.
+
+Pour éviter que le serveur NodeJS ne sature et que les joueurs ne saccadent, j'ai mis en place un **système de mise à jour différentielle**.
+C'est à dire que je ne transmet que les changements aux joueurs, et non l'état complet du monde. 
+Pas besoin de dire à tous les clients soixante fois par seconde que le rocher n°84 n'a pas bougé : autant les prévenir seulement s'il bouge.
+
+Voilà donc la solution que j'ai adopté :
+
+<Figure 
+  src={state} 
+  alt="Quartz partial and full state diagram"
+  caption= "Schéma présentant la mise à jour continuelle de l'état client par le serveur"
+/>
+
+1. À chaque cycle du serveur, chaque objet recalcule son état. 
+Il stocke ensuite ses changements (la position, par exemple) dans une **variable d'état partielle**. 
+2. Ensuite, seuls les états partiels des objets sont envoyés aux joueurs. Dans l'exemple, le client reçoit juste : le joueur `a9b8` a mis un chapeau de sorcier, et le rocher `0xl8` a roulé.
+3. Le client **met à jour les objets** qui ont reçus des changements. Côté serveur, les états partiels sont vidés, prêts à recevoir les changements lors du prochain cycle.
+
+Même avec 20 joueurs dans une zone, 99% des objets n'envoient aucune information grâce à ce système, c'est **beaucoup plus léger**.
+Et le serveur n'a presque pas de travail en plus à faire (deux assignations au lieu d'une et presque aucune condition).
+Lorsqu'un nouveau joueur se connecte, il reçoit l'état complet une fois, puis ne reçoit que les mises à jour incrémentales nécessaires. 
+
+Autre petite optimisation : ces états sont envoyés de manière volatile par le serveur (un peu plus rapide et pas de renvoi en cas de mauvaise transmission, un peu comme avec de l'UDP pour ceux qui connaissent).
+
+J'ai prévu d'aller plus loin à terme. Mon but ultime est d'implémenter de la **prédiction client** et de la **réconciliation serveur**.
+Cela permettrait au client de prédire les mouvements instantanément en calculant lui aussi la physique.
+Puis ensuite, il y aurait une phase de réconciliation : le client corrige discrètement son état du monde quand il reçoit la version "officielle" calculée par le serveur.
+
+En fait, j'ai choisi Bullet, un **moteur physique compatible javascript**, précisement pour cette raison : le plan est de faire tourner l'exact même code physique entre le client et le serveur nodeJS.
+Bien que je n'ai pas encore eu le temps de finir cette fonctionnalité, l'architecture est pensée depuis le départ pour permettre cette amélioration.
+
+
+
+## Big server is watching you
+Dans un jeu solo, le moteur de jeu fait implicitement confiance aux inputs du joueur. Si vous dites au jeu que vous avez bougé de 100 mètres en une frame, ce sera le cas. Dans un MMO (ou n'importe quel jeu en ligne en fait), **faire confiance au client est vraiment risqué**. Si le client a le pouvoir de décider de sa propre position, de sa vitesse ou de sa santé, vous pouvez être certain que quelqu'un l'exploitera pour voler, se téléporter ou devenir invincible (ou les trois à la fois).
+
+Pour éviter ça, j'ai pris soin de **ne faire confiance qu'au serveur**. Pour ce faire, le client ne « déplace » pas réellement le personnage. À la place, il envoie une « requête de déplacement » contenant une direction au serveur. Le serveur effectue ensuite une série d'actions :
+
+- **Validation des données** : Le vecteur de direction de déplacement du joueur est-il <Tooltip text="Vecteur dont la longueur est ramenée à 1 pour ne conserver que la direction.">normalisé</Tooltip> ? Imaginez que le joueur envoie un vecteur de direction supérieur à 1 : puisque nous multiplions la vitesse du joueur par le vecteur de direction, une personne maligne pourrait essayer d'augmenter sa vitesse. Regardez cet exemple :
+
+  ```cpp
+  // pseudo-code
+
+  float inputMagnitude = clientInput.length();
+
+  if (inputMagnitude > 1.0f) {
+      // Log l'activité suspecte et normalise le vecteur pour plafonner la vitesse
+      logSuspiciousRequest(player, "Movement magnitude > 1");
+      clientInput = clientInput.normalize();
+  }
+
+  // Appliquer la vitesse
+  Vector3 velocity = clientInput * p.walkSpeed;
+  ```
+  Je log aussi l'activité suspecte pour repérer les éventuels tricheurs.
+
+- **Logique d'état** : Le joueur peut-il réellement effectuer cette action ? 
+Par exemple, si vous demandez à sauter, le serveur vérifie d'abord que vos jambes touchent le sol. 
+Ça peut sembler évident, mais il faut le faire au risque de se retrouver avec avec une bande de joueurs qui volent dans le ciel (ce qui pourrait être amusant, remarquez).
+
+On retombe sur ce que je disais dans la partie précédente. Au final, il faut voir le serveur comme un client comme les autres, à ceci près qu'on peut lui faire confiance et qu'il à toujours raison.
+
+
+
+## Un tableau de bord pour les gouverner tous, et dans les ténèbres les lier
+
+Pour m'assurer que le monde puisse évoluer sans que je doive constamment fouiller dans le code source, je me suis assuré que toutes les données importantes soient en base de données. 
+
+Si elles étaient codées en dur, chaque modification mineure nécessiterait un redéploiement complet et un redémarrage du serveur. 
+Qu'il s'agisse de rajouter une nouvelle ville dans une zone, retirer une pièce d'équipement à un joueur ou modifier la quantité de brouillard la nuit à un endroit, on peut donc faire tout ça en live via un tableau de bord. **Tout est piloté par les données (data-driven)**.
+
+<Figure src={admin} alt="Administration de la zone Quartz" caption="Interface d'administration d'une zone"/>
+
+Ce tableau de bord permet aussi de placer des **objets dynamiques appelés Doodads** sur la carte d'une zone. Et comme un exemple est toujours plus parlant, voici les quelques types de Doodad qui existent pour le moment :
+- **DefaultDoodad** : sert à tous les objets qui n'ont pas de fonctionnement particulier, comme un caillou (mobile car on peut le pousser, mais n'a pas d'autre interaction)
+- **AnimatedDoodad** : sert aux objets qui ont une animation particulière inclue dans le modèle 3D.
+- **LightDoodad** : C'est une source de lumière placée quelque part dans la scène : par exemple, une torche -> pointlight.
+- **ElevatorDoodad** : objet physique qui se déplace d'un point A à un point B : par exemple, un ascenseur.
+- **NPCDoodad** : personnage non jouable, avec son apparence définie par le
+- **PortalDoodad** : portail qui mène vers une autre zone.
+- **VectorDoodad** : zone qui applique une poussée aux objet ou joueurs qui entre en contact avec. Par exemple, le courant dans une rivière.
+- **WaterDoodad** : zone de flottaison pour les joueur et les objets, sur laquelle s'affiche le shader d'eau.
+- **ResourceNodeDoodad** : objet qui dispense des ressources une fois détruit, et qui réapparait à interval régulier. Par exemple, un arbre.
+- **ResourceItemDoodad** : ressource. Par exemple, une bûche.
+- etc.
+
+Tous ces objets ont des propriétés communes : un modèle 3D graphique et un physique, une masse, un type de collision (statique, dynamique, kinématique, fantôme), une position, une échelle, etc.
+
+<Slideshow slides={adminSlides} subtitle={"Quelques pages du tableau de bord"} />
+
+Ce système n'est pas encore utilisé à fond dans la zone actuelle, mais je prévois de créer une seconde zone bientôt qui permettra de jouer avec certains de ces objets.
+
+## Et maintenant ?
+
+Le jeu est désormais en ligne, encore à l'état de prototype mais tout à fait fonctionnel.
+Vous pouvez aller l'essayer sur https://quaartz.io.
+
+J'ai mené ce projet seul, sur mon temps libre, et **ça a été une des expériences les plus enrichissantes de ma vie.**
+Je suis tellement heureux de fabriquer ce petit monde que ça ne me demande pas d'effort, et je suis toujours content d'y retourner quand j'ai un peu de temps.
+Bien sûr, il y a eu des moments de doute (particulièrement au début au moment de la conception) et quelques nuits blanches à résoudre des bugs bien mystérieux, mais ça m'a
+appris qu'avec assez de curiosité (et pas mal de caféine), on peut surmonter n'importe quel obstacle technique. 
+Il n'y a rien de plus gratifiant que de voir, après des semaines de travail acharné, deux amis se connecter et courir partout sur une île imaginée de toute pièce.
+
+J'ai encore pas mal d'idées pour la suite, je ferais peut être un seconde article un de ces jours. **Voici ma roadmap pour l'instant :**
+- Créer une véritable seconde zone qui exploite à fond le nouveau système de Doodads.
+- Ajouter la recolorisation des personnages.
+- Sortir le système de prédiction et réconciliation.
+- Publier l'app mobile sur le playstore.
+
+**Merci d'avoir pris le temps de me lire !**
+Si vous avez quelque chose à ajouter, des questions ou des remarques (même négatives) sur cet article, n'hésitez pas à laisser un commentaire ci-dessous ↓

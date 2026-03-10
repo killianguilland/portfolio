@@ -1,0 +1,210 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { ImageCompare } from '@/components/ImageCompare'
+import { Slideshow } from '@/components/Slideshow'
+import { Reference } from '@/components/Reference'
+import { Tooltip } from '@/components/Tooltip'
+import { YouTube } from '@/components/Youtube'
+import { Figure } from '@/components/Figure'
+import thumbnail from './thumbnail.jpg'
+import illustration from './illustration.jpg'
+import features from './features.png'
+import admin from './admin.png'
+import architecture from './architecture.png'
+import state from './state.png'
+import routing from './routing.png'
+import graphics from './graphics.png'
+import physics from './physics.png'
+import { slides as wowSlides } from './wow-slideshow/index'
+import { slides as adminSlides } from './admin-slideshow/index'
+import { article as RpgCharacterCreationArticle } from '../../(en)/rpg-character-creation/page.mdx'
+
+export const article = {
+  author: 'Killian Guilland',
+  date: '2023-01-02',
+  title: 'Building my own MMO: A tale of architecture and paranoia',
+  description: `I’ll always remember the sense of wonder I felt taking the boat from Tel’drassil to Stormwind for the first time. 
+    Ever since, I’ve been fascinated by multiplayer open worlds and how real they can feel. 
+    But as I soon discovered, building one myself was a whole different story. 
+    From syncing world states to preventing cheating and keeping the server from melting down: 
+    here is the story of every problem I solved while creating my own MMO.`,
+  image: thumbnail,
+  illustration: illustration,
+  featured: true,
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+*For Laura.*
+
+When I was a kid, my older sister introduced me to World of Warcraft, never suspecting the game would leave such a lasting impression on me. I’ll never forget the sense of awe I felt taking the boat from Tel’drassil to Stormwind for the first time.
+
+Surrounded by all these other players, lost in vast regions filled with secrets, it suddenly struck me: even though it was *virtual*, this world felt credible, alive, **almost real**.
+
+<Slideshow slides={wowSlides} subtitle={"My screenshots of World of Warcraft © Blizzard Entertainment"} />
+
+Ever since that day, I’ve been fascinated by multiplayer open worlds. The idea of building one myself took root in the back of my mind. But I had no idea what I was getting into. Because making a multiplayer open world **is far from easy**.
+
+Between synchronizing the world state, preventing cheating, and making sure the server doesn't catch fire: I'm going to tell you about all the challenges I overcame while creating Quaartz, my own <Tooltip text="Massively Multiplayer Online Game">MMO</Tooltip>.
+
+## Picking my battles
+
+Before diving into the code, I started by defining the game's scope. I focused on the features I wanted at all costs:
+- **Real-time movement in 3D environments**: To maximize the sense of exploration, I wanted full 3D environments without grid-based movement (unlike games like Dofus).
+- **Persistent world**: Everything must be saved (items, players, etc.) so that they remain in the same place after a logout or a server reboot.
+- **Realistic physics collisions**: This is Quaartz's standout feature. Every object has its own shape and mass, opening up endless possibilities (*rolling a boulder down a hill to surprise players below, pushing a raft into a current, or blocking a path by stacking obstacles*).
+<Figure src={features} alt="Screenshots of in-game features" caption="A glimpse of the features implemented in Quaartz" />
+- **No cheating**: After all, nothing can have value in an MMO if players start cheating.
+- **Mobile and Web support**: So that inviting friends is as easy as sending them a link.
+- **Admin Interface**: Nothing should be <Tooltip text="A value fixed in the code, modifiable only by a developer.">hardcoded</Tooltip>, allowing admins to modify and grow the world easily. 
+- **Character Creation**: I wrote a dedicated article on this feature **here ↓**
+
+<Reference article={RpgCharacterCreationArticle} />
+
+Quite a lot of work! To balance it out, I made some compromises:
+- **World Loading**: I chose to divide the map into several zones connected by portals. It was a tough decision because it limits zone size, but I figured I could implement a chunk-based loading system in the future if needed.
+- **Aesthetics**: I opted for low-poly models because they are faster to create for a modeling beginner like me, lighter for web assets, and less taxing on smartphone hardware.
+- **World Design**: No need for procedural generation; hand-crafted environments are more rewarding to explore anyway.
+
+I won't keep you waiting any longer, here is a quick demo of two players roaming around in the game!
+
+<YouTube id={'Vg3EBX3aEQY'} autoplay={true} />
+
+## Making sure the server doesn't melt down
+
+I put a lot of thought into how to divide my code between the server and the client. On the server side specifically, I set up a system designed for easy <Tooltip text="Vertical scalability: boosting server hardware VS Horizontal scalability: adding servers to distribute the load across multiple machines.">scalability</Tooltip> in the future.
+The tech stack is divided into three blocks:
+
+<Figure src={architecture} alt="Quartz server architecture diagram" caption="Diagram of the Quaartz technical stack"/>
+
+1. **Django** is the only layer with direct access to the database. It provides **secure data access** via a REST API and hosts the admin panel for the staff. I chose Django for its excellent REST support, its powerful automatic admin tool, and simply because I love using it.
+
+2. **One NodeJS server per world zone**: Each server is dedicated to a specific map area. They receive player inputs, compute world physics (via the Bullet engine), and update clients accordingly. Since they handle the most intensive computing, they are designed to be **easily distributed** across different machines. They regularly call Django endpoints to save the world state using a secret token.
+
+3. **The client** is a web app built with React that **uses ThreeJS for 3D rendering**. It only communicates with the NodeJS server of the zone the player is currently in and is redirected to another server when moving to a new area.
+
+## Routing System
+
+<Figure 
+  src={routing} 
+  alt="Quartz shard routing system" 
+  caption="Step-by-step diagram of a zone change"
+/>
+
+In the diagram above, you can see in detail how a player moves from one zone to another.
+
+First, the client connects to Zone 1 via the NodeJS server at the <Tooltip text="The wss:// prefix stands for Secure WebSocket protocol, similar to how https:// stands for secure http.">address</Tooltip> `wss://1.quaartz.io`, sending their login and password.
+
+The server authenticates the user and checks if their character is indeed in Zone 1. If not, it responds with a `logout.area-redirect` event, passing the ID of the correct zone (e.g., Zone 3).
+
+Upon receiving this, the client initiates a new connection to the correct server: `wss://3.quaartz.io`. 
+
+**If the player crosses a portal to another zone**: The server saves their new position via Django's REST API and disconnects the client with a redirect event. The process then repeats from step 2.
+
+## Visual World VS Physical World
+
+A quick side note on physics management.
+I decided to calculate physics server-side to prevent cheating. This ensures the client cannot lie about its position.
+<ImageCompare
+  beforeSrc={graphics} 
+  beforeAlt="Low-poly terrain" 
+  beforeLabel="Visual Mesh"
+  afterSrc={physics} 
+  afterAlt="Collision mesh" 
+  afterLabel="Physics Mesh"
+  caption="Comparison between the visual model and the simplified physics mesh."
+  />
+I quickly realized that **using visual 3D models for collisions was a bad idea**, for two reasons:
+- They are too **complex**. Even a low-poly object might use hundreds of triangles. For a physics engine, this complexity is useless and resource-heavy.
+- Some models are **not navigable**. For example, a staircase: you would have to "jump" for every single step if you used the visual model. Instead, we prefer a "ramp" shape for fluid climbing.
+
+I created an alternative version of the map for collisions: every palm tree becomes a simple pole, a bridge made of ten planks becomes a single smooth box, and the player becomes a capsule.
+
+## The War on Lag
+In a perfect world, every player would receive the full world state 60 times per second. I coded that initially (it was the simplest way), but it quickly proved to be **way too heavy**. On slower connections, the massive volume of data caused major lag.
+
+To keep the NodeJS server from choking, I implemented a **differential update system**.
+Instead of sending the full state, I only transmit what has changed. There’s no point in telling every client sixty times a second that "Rock #84" hasn't moved.
+
+Here is the solution I adopted:
+
+<Figure 
+  src={state} 
+  alt="Quartz partial and full state diagram"
+  caption="Diagram showing the continuous update of the client state by the server"
+/>
+
+1. At each server tick, every object recalculates its state and stores changes (like position) in a **partial state variable**. 
+2. Only these partial states are sent to players. For example, the client receives: "Player `a9b8` put on a wizard hat" and "Rock `0xl8` rolled."
+3. The client **updates its local objects** using these fragments. On the server side, the partial states are flushed, ready for the next cycle.
+
+Even with 20 players in a zone, 99% of objects send zero data. It’s **significantly lighter**, and the server workload is minimal (two assignments instead of one). 
+
+I plan to go further by implementing **client-side prediction** and **server reconciliation**. This would allow the client to predict movements instantly by running the physics locally, then "reconciling" (correcting) the state once the official server version arrives. 
+
+## Big Server is Watching You
+In a single-player game, the engine trusts your inputs. If you say you moved 100 meters in one frame, you did. In an MMO, **trusting the client is risky**. If the client decides its own position or health, someone *will* exploit it to fly, teleport, or become invincible.
+
+To prevent this, I **only trust the server**. The client doesn't actually "move" the character; it sends a "move request" (a direction) to the server. The server then:
+
+- **Validates data**: Is the direction vector <Tooltip text="A vector whose length is reduced to 1 to keep only the direction.">normalized</Tooltip>? If a player sends a vector > 1 to try and go faster, I catch it:
+  ```cpp
+  // pseudo-code
+  float inputMagnitude = clientInput.length();
+  if (inputMagnitude > 1.0f) {
+      logSuspiciousRequest(player, "Movement magnitude > 1");
+      clientInput = clientInput.normalize();
+  }
+  Vector3 velocity = clientInput * p.walkSpeed;
+  ````
+- **Checks state logic**: Can the player jump? The server checks if their legs are touching the ground first. Obvious, but necessary to prevent everyone from flying.
+
+Essentially, the server is just another client, except it's the only one we trust, and it's always right.
+
+## One Dashboard to Rule Them All
+
+To ensure the world could evolve without me constantly digging into the source code, I made sure all important data was stored in the database. 
+
+If it were hardcoded, every minor tweak would require a full redeployment and a server restart. Whether it’s adding a new town to a zone, removing a piece of gear from a player, or adjusting the amount of night fog in a specific spot, everything can be done live via a dashboard. **Everything is data-driven.**
+
+<Figure src={admin} alt="Quartz zone administration" caption="The zone administration interface"/>
+
+This dashboard also allows me to place **dynamic objects called Doodads** on the map. To give you a better idea, here are the types of Doodads currently implemented:
+
+- **DefaultDoodad**: Used for objects without specific logic, like a rock (movable since it can be pushed, but has no other interaction).
+- **AnimatedDoodad**: For objects with specific animations included in the 3D model.
+- **LightDoodad**: A light source placed in the scene (e.g., a torch -> pointlight).
+- **ElevatorDoodad**: A physical object moving from point A to point B (e.g., an elevator).
+- **NPCDoodad**: A non-player character, with its appearance defined by the editor.
+- **PortalDoodad**: A gateway leading to another zone.
+- **VectorDoodad**: A zone that applies a physical push to objects or players (e.g., a river current).
+- **WaterDoodad**: A buoyancy zone for players and objects, displaying the water shader.
+- **ResourceNodeDoodad**: An object that drops resources when destroyed and respawns at regular intervals (e.g., a tree).
+- **ResourceItemDoodad**: A collectible resource (e.g., a log).
+
+All these objects share common properties: a visual 3D model and a physical one, mass, collision type (static, dynamic, kinematic, ghost), position, scale, and more.
+
+<Slideshow slides={adminSlides} subtitle={"A few pages from the admin dashboard"} />
+
+This system isn't yet fully utilized in the current zone, but I plan to create a second area soon to experiment with these objects.
+
+## What's next?
+
+The game is now live (still a prototype, but fully functional). You can try it out at https://quaartz.io.
+
+I built this project solo, entirely in my free time, and **it has been one of the most rewarding experiences of my life**. I’m so happy building this little world that it feels effortless—I’m always excited to dive back into it whenever I have a spare moment.
+
+Of course, there were moments of doubt (especially during the early design stages) and a few all-nighters spent chasing down some very mysterious bugs, but it taught me that with enough curiosity (and a solid dose of caffeine) you can overcome any technical hurdle. There is nothing more rewarding than seeing, after weeks of hard work, two friends log in and start running around an island that I dreamed up from scratch.
+
+I still have plenty of ideas for the future and might write a second article someday. **Here is my current roadmap:**
+- Create a real second zone that fully exploits the new Doodad system.
+- Add character recoloring.
+- Release the client-side prediction and server reconciliation system.
+- Publish the mobile app on the Play Store.
+
+**Thanks for taking the time to read!**
+If you have anything to add, questions, or feedback (even negative!), feel free to leave a comment below ↓

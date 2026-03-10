@@ -21,6 +21,8 @@ import logoIut2 from '@/images/logos/iut2.png'
 import { type ArticleWithSlug, getAllArticles } from '@/lib/articles'
 import { formatDate } from '@/lib/formatDate'
 import Game from '@/components/Game'
+import { useLocale, useTranslations } from 'next-intl'
+import { getLocale, getTranslations } from 'next-intl/server';
 
 
 function MailIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -104,13 +106,12 @@ function ArrowDownIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   )
 }
 
-function Article({ article, odd }: { article: ArticleWithSlug, odd: boolean }) {
-console.log(article.image);
+function Article({ article }: { article: ArticleWithSlug}) {
   return (
     <Card as="article">
       <div className={`relative z-10 mb-5 overflow-hidden rounded-lg bg-zinc-100 ring-1 ring-zinc-900/5 dark:bg-zinc-800 dark:ring-zinc-700/50 hover:ring-zinc-900`}>
         <img
-          src={article.image.src} // Assure-toi que ton objet article contient ce champ
+          src={article.image.src}
           alt=""
           className="aspect-[16/9] w-full object-cover transition duration-300"
         />
@@ -141,17 +142,19 @@ function SocialLink({
 }
 
 function Newsletter() {
+  const t = useTranslations('Index.Newsletter');
+
   return (
     <form
       action="/thank-you"
-      className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40"
+      className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40 hidden lg:block"
     >
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <MailIcon className="h-6 w-6 flex-none" />
-        <span className="ml-3">Stay up to date</span>
+        <span className="ml-3">{t('title')}</span>
       </h2>
       <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-        Get notified when I publish something new, and unsubscribe at any time.
+        {t('description')}
       </p>
       <div className="mt-6 flex items-center">
         <span className="flex min-w-0 flex-auto p-px">
@@ -164,7 +167,7 @@ function Newsletter() {
           />
         </span>
         <Button type="submit" className="ml-4 flex-none">
-          Join
+          {t('cta')}
         </Button>
       </div>
     </form>
@@ -251,10 +254,11 @@ function LangCard({ language }: { language: Language }) {
 }
 
 function Resume() {
+  const t = useTranslations('Index.Resume');
   let resume: Array<Role> = [
     {
-      company: 'C++ Programming Tutor',
-      title: 'ESIEE Paris',
+      company: t('roles.esiee.company'),
+      title: t('roles.esiee.title'),
       logo: logoEsiee,
       start: '2025',
       end: {
@@ -263,36 +267,36 @@ function Resume() {
       },
     },
     {
-      company: 'Engineering Degree in Creative Technology',
-      title: 'IMAC',
+      company: t('roles.imac.company'),
+      title: t('roles.imac.title'),
       logo: logoImac,
       start: '2008',
       end: '11',
     },
     {
-      company: 'Full Stack Web Developer',
-      title: 'Ascan.io',
+      company: t('roles.ascanio.company'),
+      title: t('roles.ascanio.title'),
       logo: logoAscanio,
       start: '2014',
       end: '19',
     },
     {
-      company: 'Developer Apprenticeship',
-      title: 'Nitroserv',
+      company: t('roles.nitro.company'),
+      title: t('roles.nitro.title'),
       logo: logoNitro,
       start: '2011',
       end: '14',
     },
     {
-      company: 'Professional Bachelor’s Degree in Computer Science',
-      title: 'LP MIAW',
+      company: t('roles.iut1.company'),
+      title: t('roles.iut1.title'),
       logo: logoIut1,
       start: '2008',
       end: '11',
     },
     {
-      company: 'Associate Degree in Multimedia & Web Dev',
-      title: 'DUT MMI',
+      company: t('roles.iut2.company'),
+      title: t('roles.iut2.title'),
       logo: logoIut2,
       start: '2008',
       end: '11',
@@ -300,10 +304,10 @@ function Resume() {
   ]
 
   return (
-    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40 hidden lg:block">
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <BriefcaseIcon className="h-6 w-6 flex-none" />
-        <span className="ml-3">Experience & education</span>
+        <span className="ml-3">{t('title')}</span>
       </h2>
       <ol className="mt-6 space-y-4">
         {resume.map((role, roleIndex) => (
@@ -311,7 +315,7 @@ function Resume() {
         ))}
       </ol>
       <Button href="#" variant="secondary" className="group mt-6 w-full">
-        Download CV
+        {t('cta')}
         <ArrowDownIcon className="h-4 w-4 stroke-zinc-400 transition group-active:stroke-zinc-600 dark:group-hover:stroke-zinc-50 dark:group-active:stroke-zinc-50" />
       </Button>
     </div>
@@ -319,34 +323,35 @@ function Resume() {
 }
 
 function Languages() {
+  const t = useTranslations('Index.Languages');
   let languages: Array<Language> = [
     {
-      company: 'French',
+      company: t('fr.company'),
       code: 'fr',
-      title: 'Native',
+      title: t('fr.title'),
     },
     {
-      company: 'English',
+      company: t('en.company'),
       code: 'en',
-      title: 'C1 TOEIC (980)',
+      title: t('en.title'),
     },
     {
-      company: 'German',
+      company: t('de.company'),
       code: 'de',
-      title: 'Conversational',
+      title: t('de.title'),
     },
     {
-      company: 'Spanish',
+      company: t('es.company'),
       code: 'es',
-      title: 'Learning',
+      title: t('es.title'),
     },
   ]
 
   return (
-    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40">
+    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40 hidden lg:block">
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <LanguageIcon className="h-6 w-6 flex-none" />
-        <span className="ml-3">Languages</span>
+        <span className="ml-3">{t('title')}</span>
       </h2>
       <ol className="mt-6 space-y-4">
         {languages.map((language, languageIndex) => (
@@ -360,7 +365,7 @@ function Languages() {
 function Minigame() {
 
   return (
-    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40 relative">
+    <div className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40 relative hidden lg:block">
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100 absolute">
         <StarIcon className="h-6 w-6 flex-none" />
         <span className="ml-3">Dino zone</span>
@@ -378,31 +383,35 @@ function Minigame() {
 }
 
 function ProjectsShortcut() {
+  const t = useTranslations('Index.ProjectsShortcut');
   return (
     <Link href='/projects' className="block rounded-2xl border bg-zinc-50 border-zinc-100 hover:bg-zinc-100 p-6 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:border-zinc-700/40 relative">
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <span className="ml-3">See my projects</span>
+        <span className="ml-3">{t('title')}</span>
       </h2>
     </Link>
   )
 }
 
 function FunShortcut() {
+  const t = useTranslations('Index.FunShortcut');
   return (
     <Link href='/fun-stuff' className="block rounded-2xl border bg-zinc-50 border-zinc-100 hover:bg-zinc-100 p-6 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:border-zinc-700/40 relative">
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <span className="ml-3">Check out miscellaneous experiments</span>
+        <span className="ml-3">{t('title')}</span>
       </h2>
     </Link>
   )
 }
 
 async function ArticlesShortcut() {
-  let articles = (await getAllArticles()).filter((article) => !article.featured).reverse()
+  const t = await getTranslations('Index.ArticlesShortcut');
+  const locale = await getLocale();
+  let articles = (await getAllArticles(locale)).filter((article) => !article.featured).reverse()
   return (
     <Link href='/articles' className="block rounded-2xl group border bg-zinc-50 border-zinc-100 hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:border-zinc-700/40 relative">
       <h2 className="flex items-center text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <span className="ml-3 p-6">Read more articles</span>
+        <span className="ml-3 p-6">{t('title')}</span>
         {/* <div className='flex ml-auto h-full items-center -gap-3'> */}
         {articles && articles.map((article, i) =>
           <img key={'article' + i} src={article.image.src} className={`aspect-[16/9] group-hover:-translate-x-${i} transition-transform h-10 object-cover rounded-sm absolute right-4 ring-2 ring-zinc-50 dark:ring-zinc-800 dark:hover:ring-zinc-700 ${i == 1 ? 'group-hover:-rotate-4' : 'group-hover:rotate-4'}`} style={{marginRight: i * 8 + 'px'}} />
@@ -415,18 +424,22 @@ async function ArticlesShortcut() {
 }
 
 export default async function Home() {
-  let articles = (await getAllArticles()).filter((article) => article.featured)
+  const locale = await getLocale();
+  const t = await getTranslations('Index');
+  let articles = (await getAllArticles(locale)).filter((article) => article.featured)
 
   return (
     <>
       <Container className="mt-9">
         <div className="max-w-2xl">
           <h1 className="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">
-            Hello, I'm Killian!
+            {t('title')}
           </h1>
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            After a four-year career in full-stack web development, I’ve decided to follow my true calling: making games. Currently an engineering student at IMAC, I am focusing on <b>algorithmic logic</b> and <b>computer graphics</b>. I am now seeking an internship opportunity where I can learn as a game programmer alongside an experienced team.<br/><br/>
-            I’ve always been fascinated by <b>how things work "under the hood",</b> experimenting with game architectures or the constraints of GPUs and consoles. This site is a collection of those experiments.
+            {t.rich('description', {
+              b: (chunks) => <b>{chunks}</b>,
+              br: () => <span className='block h-3'/>
+            })}
           </p>
           <div className="mt-6 flex gap-6">
             {/* <SocialLink href="#" aria-label="Follow on X" icon={XIcon} /> */}
@@ -458,7 +471,7 @@ export default async function Home() {
         <div className="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
           <div className="flex flex-col gap-16">
             {articles.map((article, i) => (
-              <Article key={article.slug} article={article} odd={i % 2 == 0} />
+              <Article key={article.slug} article={article} />
             ))}
           </div>
           <div className="space-y-10 lg:pl-16 xl:pl-24">

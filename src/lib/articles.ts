@@ -16,12 +16,12 @@ export interface ArticleWithSlug extends Article {
   slug: string
 }
 
-async function importArticle(
+export async function importArticle(
   articleFilename: string,
   locale: string // We need the locale to build the correct import path
 ): Promise<ArticleWithSlug> {
   // Update the path to include [locale]
-  let { article } = (await import(`../app/[locale]/articles/${articleFilename}`)) as {
+  let { article } = (await import(`../app/[locale]/articles/(${locale})/${articleFilename}`)) as {
     default: React.ComponentType
     article: Article
   }
@@ -35,7 +35,7 @@ async function importArticle(
 export async function getAllArticles(locale: string = 'en') {
   // Update the cwd to look inside the specific locale folder
   let articleFilenames = await glob('*/page.mdx', {
-    cwd: `./src/app/[locale]/articles`, 
+    cwd: `./src/app/[locale]/articles/(${locale})`, 
   })
 
   // Pass the locale down so the import() function knows where to look

@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useRef, useState, useTransition } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+// import Link from 'next/link'
 import { useTheme } from 'next-themes'
 import {
   Popover,
@@ -16,6 +15,16 @@ import clsx from 'clsx'
 import { Container } from '@/components/Container'
 import avatarDark from '@/images/avatar-dark.png'
 import avatarLight from '@/images/avatar-light.png'
+import { useLocale, useTranslations } from 'next-intl'
+import { useRouter, usePathname, Link } from '@/i18n/routing'
+
+function LanguageIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6"  {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802" />
+    </svg>
+  )
+}
 
 function CloseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -97,10 +106,11 @@ function MobileNavItem({
 function MobileNavigation(
   props: React.ComponentPropsWithoutRef<typeof Popover>,
 ) {
+  const t = useTranslations('Header');
   return (
     <Popover {...props}>
       <PopoverButton className="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-zinc-800 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur-sm dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10 dark:hover:ring-white/20">
-        Menu
+        {t('menu')}
         <ChevronDownIcon className="ml-3 h-auto w-2 stroke-zinc-500 group-hover:stroke-zinc-700 dark:group-hover:stroke-zinc-400" />
       </PopoverButton>
       <PopoverBackdrop
@@ -117,16 +127,16 @@ function MobileNavigation(
             <CloseIcon className="h-6 w-6 text-zinc-500 dark:text-zinc-400" />
           </PopoverButton>
           <h2 className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-            Navigation
+            {t('navigation')}
           </h2>
         </div>
         <nav className="mt-6">
           <ul className="-my-2 divide-y divide-zinc-100 text-base text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300">
             {/* <MobileNavItem href="/about">About</MobileNavItem> */}
-            <MobileNavItem href="/">Home</MobileNavItem>
-            <MobileNavItem href="/articles">Articles</MobileNavItem>
-            <MobileNavItem href="/projects">Projects</MobileNavItem>
-            <MobileNavItem href="/speaking">Fun stuff</MobileNavItem>
+            <MobileNavItem href="/">{t('home')}</MobileNavItem>
+            <MobileNavItem href="/projects">{t('projects')}</MobileNavItem>
+            <MobileNavItem href="/articles">{t('articles')}</MobileNavItem>
+            <MobileNavItem href="/speaking">{t('fun')}</MobileNavItem>
             {/* <MobileNavItem href="/uses">Legal mentions</MobileNavItem> */}
           </ul>
         </nav>
@@ -143,7 +153,10 @@ function NavItem({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  let isActive = usePathname().replace('en/', '').replace('fr/', '').replace('/en', '/').replace('/fr', '/') === href
+  let isActive = pathname.replace('en/', '').replace('fr/', '').replace('/en', '/').replace('/fr', '/') === href
+  if (href.length > 3) {
+    isActive = pathname.replace('en/', '').replace('fr/', '').replace('/en', '/').replace('/fr', '/').startsWith(href)
+  }
 
   return (
     <li>
@@ -166,14 +179,15 @@ function NavItem({
 }
 
 function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
+  const t = useTranslations('Header');
   return (
     <nav {...props}>
       <ul className="flex rounded-full bg-white/90 px-3 text-sm font-medium text-zinc-800 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur-sm dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10">
         {/* <NavItem href="/about">About</NavItem> */}
-        <NavItem href="/">Home</NavItem>
-        <NavItem href="/articles">Articles</NavItem>
-        <NavItem href="/projects">Projects</NavItem>
-        <NavItem href="/speaking">Fun stuff</NavItem>
+        <NavItem href="/">{t('home')}</NavItem>
+        <NavItem href="/projects">{t('projects')}</NavItem>
+        <NavItem href="/articles">{t('articles')}</NavItem>
+        <NavItem href="/speaking">{t('fun')}</NavItem>
         {/* <NavItem href="/uses">Legal mentions</NavItem> */}
       </ul>
     </nav>
@@ -193,11 +207,42 @@ function ThemeToggle() {
     <button
       type="button"
       aria-label={mounted ? `Switch to ${otherTheme} theme` : 'Toggle theme'}
-      className="group rounded-full bg-white/90 px-3 py-2 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur-sm transition dark:bg-zinc-800/90 dark:ring-white/10 dark:hover:ring-white/20"
+      className="group rounded-full px-3 py-2"
       onClick={() => setTheme(otherTheme)}
     >
-      <SunIcon className="h-6 w-6 fill-zinc-100 stroke-zinc-500 transition group-hover:fill-zinc-200 group-hover:stroke-zinc-700 dark:hidden [@media(prefers-color-scheme:dark)]:fill-teal-50 [@media(prefers-color-scheme:dark)]:stroke-teal-500 [@media(prefers-color-scheme:dark)]:group-hover:fill-teal-50 [@media(prefers-color-scheme:dark)]:group-hover:stroke-teal-600" />
+      <SunIcon className="h-6 w-6 fill-zinc-100 stroke-zinc-500 transition group-hover:fill-zinc-200 group-hover:stroke-zinc-700 dark:hidden [@media(prefers-color-scheme:dark)]:group-hover:fill-teal-50 [@media(prefers-color-scheme:dark)]:group-hover:stroke-teal-500" />
       <MoonIcon className="hidden h-6 w-6 fill-zinc-700 stroke-zinc-500 transition not-[@media_(prefers-color-scheme:dark)]:fill-teal-400/10 not-[@media_(prefers-color-scheme:dark)]:stroke-teal-500 dark:block [@media(prefers-color-scheme:dark)]:group-hover:stroke-zinc-400" />
+    </button>
+  )
+}
+
+function LanguageToggle() {
+  // let otherTheme = locale === 'dark' ? 'light' : 'dark'
+  let [mounted, setMounted] = useState(false)
+  const router = useRouter();
+  const pathname = usePathname();
+  const locale = useLocale();
+  
+  const switchLanguage = () => {
+    const nextLocale = locale === 'en' ? 'fr' : 'en';
+    
+    // Le routeur de next-intl fait le travail proprement, sans remplacer tout le chemin
+    router.replace(pathname, { locale: nextLocale });
+  };
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  return (
+    <button
+      aria-label={mounted ? `Switch language to ${locale}` : 'Toggle theme'}
+      className="block group rounded-full px-3 py-2 cursor-default hover:cursor-default"
+      onClick={switchLanguage}
+    >
+      <span className="uppercase block text-sm font-semibold h-6 w-6 text-zinc-500 transition group-hover:text-teal-500 dark:group-hover:text-zinc-400">
+        {locale}
+      </span>
     </button>
   )
 }
@@ -261,7 +306,7 @@ function Avatar({
   )
 }
 
-export function Header() {
+export function Header({locale}: {locale: boolean}) {
   const pathname = usePathname()
   let isHomePage = pathname === '/' || pathname === '/en' || pathname === '/fr'
 
@@ -439,13 +484,20 @@ export function Header() {
                   </AvatarContainer>
                 )}
               </div>
-              <div className="flex flex-2 justify-end md:justify-center">
+              <div className="flex flex-3 justify-end md:justify-center">
                 <MobileNavigation className="pointer-events-auto md:hidden" />
                 <DesktopNavigation className="pointer-events-auto hidden md:block" />
               </div>
               <div className="flex justify-end md:flex-1">
-                <div className="pointer-events-auto">
-                  <ThemeToggle />
+                <div className='flex px-2 rounded-full bg-white/90 shadow-lg ring-1 shadow-zinc-800/5 ring-zinc-900/5 backdrop-blur-sm transition dark:bg-zinc-800/90 dark:ring-white/10'>
+                  {locale &&
+                    <div className="pointer-events-auto">
+                      <LanguageToggle />
+                    </div>
+                  }
+                  <div className="pointer-events-auto">
+                    <ThemeToggle />
+                  </div>
                 </div>
               </div>
             </div>

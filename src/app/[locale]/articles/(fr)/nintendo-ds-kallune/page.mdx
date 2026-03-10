@@ -1,0 +1,36 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import { DSiEmulator } from '@/components/DSiEmulator'
+import thumbnail from './thumbnail.jpg'
+import illustration from './illustration.jpg'
+import picture from './picture.jpg'
+import Image from 'next/image'
+
+export const article = {
+  author: 'Killian Guilland',
+  date: '2025-09-05',
+  title: '656KB de Vram: comment j\'ai porté mon jeu sur Nintendo DS',
+  description: `
+Pas encore traduit`,
+  image: thumbnail,
+  illustration: illustration,
+  featured: true,
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+In a previous article, I’ve talked about Kallune (a 2D game we've made with friends). Can’t be that hard to port to the Nintendo DS, right ? 
+
+Oh boy. 
+
+As it turns out, the DS is a beautiful, elegant, but incredibly stubborn piece of hardware. In this post, I’ll walk you through the reality of developing for the ARM9, the art of aggressive tile management, and how I slowly started loving chasing every microsecond of performance.
+
+<Image src={picture} alt="Picture of a Nintendo DSi running the homebrew port of Kallune."/>
+
+I had an old DSi lying around so I've been able to test the game on real hardware! 
+
+<DSiEmulator src="/videos/screen-record.mp4"/>

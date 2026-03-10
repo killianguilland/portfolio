@@ -1,5 +1,93 @@
 {
+  "Header": {
+    "menu": "Menu",
+    "navigation": "Navigation",
+    "home": "Home",
+    "projects": "Projects",
+    "fun": "Fun stuff",
+    "articles": "Articles"
+  },
+  "Footer": {
+    "copyright": "All rights reserved."
+  },
   "Index": {
-    "title": "Hello !"
+    "title": "Hello, I'm Killian!",
+    "description": "After a four-year career in full-stack web development, I’ve decided to follow my true calling: making games. I’ve always been fascinated by <b>how things work \"under the hood\",</b> experimenting with game architectures or the constraints of GPUs and consoles. This site is a collection of those experiments.",
+    "Newsletter": {
+      "title": "Stay up to date",
+      "description": "Get notified when I publish something new, and unsubscribe at any time.",
+      "cta": "Join"
+    },
+    "Resume": {
+      "title": "Experience & education",
+      "cta": "Download CV",
+      "roles": {
+        "esiee": {
+          "company": "C++ Programming Tutor",
+          "title": "ESIEE Paris"
+        },
+        "imac": {
+          "company": "Engineering Degree in Creative Technology",
+          "title": "IMAC"
+        },
+        "ascanio": {
+          "company": "Full Stack Web Developer",
+          "title": "Ascan.io"
+        },
+        "nitro": {
+          "company": "Developer Apprenticeship",
+          "title": "Nitroserv"
+        },
+        "iut1": {
+          "company": "Professional Bachelor’s Degree in Computer Science",
+          "title": "LP MIAW"
+        },
+        "iut2": {
+          "company": "Associate Degree in Multimedia & Web Dev",
+          "title": "DUT MMI"
+        }
+      }
+    },
+    "Languages": {
+      "title": "Languages",
+      "fr": {
+        "company": "French",
+        "title": "Native"
+      },
+      "en": {
+        "company": "English",
+        "title": "C1 TOEIC (980)"
+      },
+      "de": {
+        "company": "German",
+        "title": "Conversational"
+      },
+      "es": {
+        "company": "Spanish",
+        "title": "Learning"
+      }
+    },
+    "ProjectsShortcut": {
+      "title": "See my projects"
+    },
+    "FunShortcut": {
+      "title": "Check out miscellaneous experiments"
+    },
+    "ArticlesShortcut": {
+      "title": "Read more articles"
+    }
+  },
+  "Articles": {
+    "title": "Sharing what I find out while building and breaking things",
+    "description": "When I’m experimenting with code, I often stumble upon things that are just too interesting not to share. This space is dedicated to those discoveries and the stories behind them. You can also find these articles over on my Medium page."
+  },
+  "Projects": {
+    "title": "Some of the projects I have been involved in over the years",
+    "intro": "I’ve worked on tons of little projects over the years but these are the ones that I’m most proud of. Many of them are open-source, so if you see something that piques your interest, check out the code and contribute if you have ideas for how it can be improved."
+  },
+  "Not Found": {
+    "title": "Page not found",
+    "description": "Sorry, the page you are looking for does not exist.",
+    "cta": "Go back home"
   }
 }

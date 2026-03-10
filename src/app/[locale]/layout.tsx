@@ -41,7 +41,7 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <Providers>
             <div className="flex w-full">
-              <Layout>{children}</Layout>
+              <Layout locale={true}>{children}</Layout>
             </div>
           </Providers>
         </NextIntlClientProvider>

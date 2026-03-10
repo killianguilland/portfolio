@@ -1,0 +1,30 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import thumbnail from './thumbnail.jpg'
+import { Reference } from '@/components/Reference'
+import { article as MmoScalableArchitectureArticle } from '../../(en)/mmo-scalable-architecture/page.mdx'
+import { article as KalluneNintendoDsArticle } from '../../(en)/kallune-nintendo-ds/page.mdx'
+import { article as RpgCharacterCreationArticle } from '../../(en)/rpg-character-creation/page.mdx'
+
+export const article = {
+  author: 'Killian Guilland',
+  date: '2000-09-02',
+  title: 'Unreal : making a reusable parkour system (coming soon)',
+  description:
+    'I recently dived into Unreal Engine and wanted a project that would force me to learn its core systems. I set out to build a character that could climb and wall-run on any surface. As it turns out, \'falling with style\' is a lot of work. Stay tuned for a breakdown of how I tackled the logic behind the movement.',
+  image: thumbnail,
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+This article is still being worked on. It should be released soon !
+
+In the meantime, you can read these other articles :
+
+<Reference article={MmoScalableArchitectureArticle}/>
+<Reference article={KalluneNintendoDsArticle}/>
+<Reference article={RpgCharacterCreationArticle}/>

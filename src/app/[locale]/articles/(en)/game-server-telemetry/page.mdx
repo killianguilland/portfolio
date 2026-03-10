@@ -1,0 +1,54 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import thumbnail from './thumbnail.jpg'
+import illustration from './illustration.jpg'
+
+export const article = {
+  author: 'Killian Guilland',
+  date: '2022-07-25',
+  title: 'Game Telemetry: turning my friends misadventures into fun stats',
+  description:
+    'I’ve always looked forward to my Spotify Wrapped; there’s just something fun about seeing your habits turned into stats. It made me wonder: could I do the same for the Starbound, Minecraft, or Factorio servers I run for my friends? To all the stat lovers out there: follow me as I figure out how to turn messy, raw server logs into something actually meaningful (and occasionally hilarious).',
+  image: thumbnail,
+  featured: true,
+  illustration: illustration
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+- Chapeau
+
+- La vision
+Des serveurs avec mes amis
+J'aime proposer des services autour
+(map Minecraft en en temps réel, interface d'admin pour reboot un serveur en rade, contournement réseau via une adresse qui permet d'accéder aux jeux même sur le réseau de la fac 👀)
+Le produit
+Recréer le fun des stats a la Spotify unwrapped
+
+[ILLU] Spotify unwrapped
+
+- La difficulté 
+Trouver un moyen commun d'observer pleins de serveurs de jeu différents
+rcon pas universel, etc
+Centraliser tout un tas de logs différent pour en tirer des stats comparables
+Design pattern strategy MinecraftLogTranslator, etc
+Option watch
+
+- La solution
+Mise en place de convertisseurs de log en csv
+
+- La péripétie
+Unifier les noms d'utilisateurs
+Finalement fait avec un tableau de correspondance maintenu a la mano
+
+- Le résultat
+Un beau graphique mensuel automatique
+
+- La conclusion 
+Ca à beaucoup plus et mes potes me l'ont reclamé le mois suivant
+C'est cool mais c'est une sorte de Poc
+Pour améliorer → faire un vrai système de watcher ou qqn rentre tous ses pseudos pour obtenir ses stats compilées

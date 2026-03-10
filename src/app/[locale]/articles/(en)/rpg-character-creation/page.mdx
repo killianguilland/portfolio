@@ -1,0 +1,26 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import thumbnail from './thumbnail.jpg'
+import illustration from './illustration.jpg'
+
+export const article = {
+  author: 'Killian Guilland',
+  date: '2023-09-02',
+  title: 'I made a character creation for a role playing game',
+  description:
+    'Character creation is a peculiar thing. People will spend hours getting their Sims just right, drop fortunes on Fortnite skins, or feel a genuine spark of joy when their Mii pops up in the Mario Kart crowd. There is something fundamentally cool about making an avatar your own (especially in a multiplayer world). So, naturally, I had to try and replicate that magic for my own MMO.',
+  image: thumbnail,
+  illustration: illustration
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+- Textured Toon Shader
+- Automatic thumbnail generation
+- Common animation mixer and armature, but modulable meshes
+- Preparing the models 
+Quaternius fun fact (storytelling)

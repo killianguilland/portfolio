@@ -1,5 +1,89 @@
 {
+  "Header": {
+    "menu": "Menu",
+    "navigation": "Navigation",
+    "home": "Accueil",
+    "projects": "Projets",
+    "fun": "Trucs fun",
+    "articles": "Articles"
+  },
+  "Footer": {
+    "copyright": "Tous droits réservés."
+  },
   "Index": {
-    "title": "Salut !"
+    "title": "Hello, moi c'est Killian !",
+    "description": "Après une carrière de quatre ans en tant que développeur web full-stack, j'ai décidé de suivre ma véritable vocation : créer des jeux vidéo. Actuellement étudiant en école d'ingénieurs à l'IMAC, je me concentre sur la <b>logique algorithmique</b> et la <b>synthèse d'image</b>. Je suis aujourd'hui à la recherche d'une opportunité de stage où je pourrai apprendre en tant que programmeur de jeux vidéo aux côtés d'une équipe expérimentée.<br></br>J'ai toujours été fasciné par <b>le fonctionnement des choses \"sous le capot\",</b> expérimentant avec les architectures de jeux ou les contraintes des GPU et des consoles. Ce site est une collection de ces expériences.",
+    "Newsletter": {
+      "title": "Restez informé",
+      "description": "Soyez averti lorsque je publie du nouveau contenu, et désabonnez-vous à tout moment.",
+      "cta": "S'inscrire"
+    },
+    "Resume": {
+      "title": "Expériences et formations",
+      "cta": "Télécharger mon CV",
+      "roles": {
+        "esiee": {
+          "company": "Tuteur en programmation C++",
+          "title": "ESIEE Paris"
+        },
+        "imac": {
+          "company": "Diplôme d'ingénieur en technologies créatives",
+          "title": "IMAC"
+        },
+        "ascanio": {
+          "company": "Développeur Web Full-Stack",
+          "title": "Ascan.io"
+        },
+        "nitro": {
+          "company": "Développeur en alternance",
+          "title": "Nitroserv"
+        },
+        "iut1": {
+          "company": "Licence Professionnelle en Informatique",
+          "title": "LP MIAW"
+        },
+        "iut2": {
+          "company": "DUT Métiers du Multimédia et de l'Internet",
+          "title": "DUT MMI"
+        }
+      }
+    },
+    "Languages": {
+      "title": "Langues",
+      "fr": {
+        "company": "Français",
+        "title": "Langue maternelle"
+      },
+      "en": {
+        "company": "Anglais",
+        "title": "C1 TOEIC (980)"
+      },
+      "de": {
+        "company": "Allemand",
+        "title": "Niveau conversationnel"
+      },
+      "es": {
+        "company": "Espagnol",
+        "title": "En apprentissage"
+      }
+    },
+    "ProjectsShortcut": {
+      "title": "Voir mes projets"
+    },
+    "FunShortcut": {
+      "title": "Découvrir mes autres expériences"
+    },
+    "ArticlesShortcut": {
+      "title": "Lire d'autres articles"
+    }
+  },
+  "Articles": {
+    "title": "Ce que j'ai découvert en bidouillant des trucs",
+    "description": "Parfois, je tombe sur quelque chose de trop intéressant pour ne pas le partager. Cet espace est dédié à ces découvertes et aux histoires qui se cachent derrière. Vous pouvez également retrouver ces articles sur ma page Medium."
+  },
+  "Not Found": {
+    "title": "Page introuvable",
+    "description": "Désolé, la page que vous recherchez n'existe pas.",
+    "cta": "Retour à l'accueil"
   }
 }
