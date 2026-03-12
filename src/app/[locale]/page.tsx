@@ -49,12 +49,13 @@ function MailIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 }
 
 function MailIconBis(props: React.ComponentPropsWithoutRef<'svg'>) {
-return (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6" {...props}>
-    <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
-    <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
-  </svg>
-)}
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6" {...props}>
+      <path d="M1.5 8.67v8.58a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V8.67l-8.928 5.493a3 3 0 0 1-3.144 0L1.5 8.67Z" />
+      <path d="M22.5 6.908V6.75a3 3 0 0 0-3-3h-15a3 3 0 0 0-3 3v.158l9.714 5.978a1.5 1.5 0 0 0 1.572 0L22.5 6.908Z" />
+    </svg>
+  )
+}
 
 
 function BriefcaseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
@@ -83,15 +84,17 @@ function BriefcaseIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 function LanguageIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-  <path className="fill-zinc-100 stroke-zinc-400 dark:fill-zinc-100/10 dark:stroke-zinc-500" strokeLinecap="round" strokeLinejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46" />
-</svg>)}
+      <path className="fill-zinc-100 stroke-zinc-400 dark:fill-zinc-100/10 dark:stroke-zinc-500" strokeLinecap="round" strokeLinejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 1 1 0-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 0 1-1.44-4.282m3.102.069a18.03 18.03 0 0 1-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 0 1 8.835 2.535M10.34 6.66a23.847 23.847 0 0 0 8.835-2.535m0 0A23.74 23.74 0 0 0 18.795 3m.38 1.125a23.91 23.91 0 0 1 1.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 0 0 1.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 0 1 0 3.46" />
+    </svg>)
+}
 
 function StarIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-  <path className="fill-zinc-100 stroke-zinc-400 dark:fill-zinc-100/10 dark:stroke-zinc-500" fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
-</svg>
-)}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+      <path className="fill-zinc-100 stroke-zinc-400 dark:fill-zinc-100/10 dark:stroke-zinc-500" fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd" />
+    </svg>
+  )
+}
 
 function ArrowDownIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -106,7 +109,7 @@ function ArrowDownIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   )
 }
 
-function Article({ article }: { article: ArticleWithSlug}) {
+function Article({ article }: { article: ArticleWithSlug }) {
   return (
     <Card as="article">
       <div className={`relative z-10 mb-5 overflow-hidden rounded-lg bg-zinc-100 ring-1 ring-zinc-900/5 dark:bg-zinc-800 dark:ring-zinc-700/50 hover:ring-zinc-900`}>
@@ -372,7 +375,8 @@ function Minigame() {
       </h2>
       <ol className="dark:invert z-20 relative">
         <Game />
-        <style dangerouslySetInnerHTML={{ __html: `
+        <style dangerouslySetInnerHTML={{
+          __html: `
           .interstitial-wrapper#main-frame-error {
             margin-top: -2px !important;
           }
@@ -393,16 +397,16 @@ function ProjectsShortcut() {
   )
 }
 
-function FunShortcut() {
-  const t = useTranslations('Index.FunShortcut');
-  return (
-    <Link href='/fun-stuff' className="block rounded-2xl border bg-zinc-50 border-zinc-100 hover:bg-zinc-100 p-6 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:border-zinc-700/40 relative">
-      <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-        <span className="ml-3">{t('title')}</span>
-      </h2>
-    </Link>
-  )
-}
+// function FunShortcut() {
+//   const t = useTranslations('Index.FunShortcut');
+//   return (
+//     <Link href='/fun-stuff' className="block rounded-2xl border bg-zinc-50 border-zinc-100 hover:bg-zinc-100 p-6 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:border-zinc-700/40 relative">
+//       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+//         <span className="ml-3">{t('title')}</span>
+//       </h2>
+//     </Link>
+//   )
+// }
 
 async function ArticlesShortcut() {
   const t = await getTranslations('Index.ArticlesShortcut');
@@ -414,11 +418,11 @@ async function ArticlesShortcut() {
         <span className="ml-3 p-6">{t('title')}</span>
         {/* <div className='flex ml-auto h-full items-center -gap-3'> */}
         {articles && articles.map((article, i) =>
-          <img key={'article' + i} src={article.image.src} className={`aspect-[16/9] group-hover:-translate-x-${i} transition-transform h-10 object-cover rounded-sm absolute right-4 ring-2 ring-zinc-50 dark:ring-zinc-800 dark:hover:ring-zinc-700 ${i == 1 ? 'group-hover:-rotate-4' : 'group-hover:rotate-4'}`} style={{marginRight: i * 8 + 'px'}} />
+          <img key={'article' + i} src={article.image.src} className={`aspect-[16/9] group-hover:-translate-x-${i} transition-transform h-10 object-cover rounded-sm absolute right-4 ring-2 ring-zinc-50 dark:ring-zinc-800 dark:hover:ring-zinc-700 ${i == 1 ? 'group-hover:-rotate-4' : 'group-hover:rotate-4'}`} style={{ marginRight: i * 8 + 'px' }} />
         )}
         {/* </div> */}
       </h2>
-      <div className='hidden group-hover:-translate-x-1 group-hover:-translate-x-2 group-hover:-translate-x-3'/>
+      <div className='hidden group-hover:-translate-x-1 group-hover:-translate-x-2 group-hover:-translate-x-3' />
     </Link>
   )
 }
@@ -438,7 +442,7 @@ export default async function Home() {
           <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
             {t.rich('description', {
               b: (chunks) => <b>{chunks}</b>,
-              br: () => <span className='block h-3'/>
+              br: () => <span className='block h-3' />
             })}
           </p>
           <div className="mt-6 flex gap-6">
@@ -481,7 +485,7 @@ export default async function Home() {
             <Minigame />
             <div className='flex-col space-y-3 mt-auto'>
               <ProjectsShortcut />
-              <FunShortcut />
+              {/* <FunShortcut /> */}
               <ArticlesShortcut />
             </div>
           </div>

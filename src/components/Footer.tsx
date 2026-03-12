@@ -33,7 +33,7 @@ export function Footer() {
                 <NavLink href="/">{tHeader('home')}</NavLink>
                 <NavLink href="/projects">{tHeader('projects')}</NavLink>
                 <NavLink href="/articles">{tHeader('articles')}</NavLink>
-                <NavLink href="/speaking">{tHeader('fun')}</NavLink>
+                {/* <NavLink href="/speaking">{tHeader('fun')}</NavLink> */}
               </div>
               <p className="text-sm text-zinc-400 dark:text-zinc-500">
                 &copy; {new Date().getFullYear()} Killian Guilland. {t('copyright')}

@@ -11,12 +11,14 @@ interface ReferenceProps {
   article: ArticleWithSlug
   title?: string
   description?: string
+  contained?: boolean
 }
 
 export function Reference({
   article,
   title,
   description,
+  contained
 }: ReferenceProps) {
 
   const [isAlt, setIsAlt] = useState(false)
@@ -27,14 +29,14 @@ export function Reference({
   }, [])
 
   return (
-    <article className="not-prose py-8">
+    <article className={`not-prose ${contained ? 'pt-8' : 'py-8'}`}>
       <Card
         className="group gap-5 flex-col md:flex-row"
         onMouseLeave={() => {
           setIsAlt(Math.random() < 0.5)
         }}
       >
-        <div className="absolute -inset-x-4 -inset-y-6 z-0 border-4 border-zinc-50 transition scale-100 opacity-100 sm:-inset-x-6 sm:rounded-2xl dark:border-zinc-800/50" />
+        <div className={`absolute ${contained ? 'hidden' : ''} -inset-x-4 -inset-y-6 sm:-inset-x-6 z-0 border-4 border-zinc-50 transition scale-100 opacity-100 sm:rounded-2xl dark:border-zinc-800/50`} />
         <img
           src={article.image.src}
           alt={'Illustration'}

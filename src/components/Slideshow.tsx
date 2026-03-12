@@ -4,11 +4,12 @@ import Image, { StaticImageData } from 'next/image'
 
 interface SlideshowProps {
   slides: StaticImageData[]
-  interval?: number 
-  subtitle?: string 
+  interval?: number
+  subtitle?: string
+  contained?: boolean
 }
 
-export function Slideshow({ slides, interval = 3000, subtitle = "" }: SlideshowProps) {
+export function Slideshow({ slides, interval = 3000, subtitle = "", contained = false }: SlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [isZoomed, setIsZoomed] = useState(false) // Logique de zoom ajoutée
@@ -44,7 +45,7 @@ export function Slideshow({ slides, interval = 3000, subtitle = "" }: SlideshowP
     }
 
     window.addEventListener('keydown', handleKeyDown)
-    
+
     // Nettoyage crucial pour éviter les fuites de mémoire
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [isZoomed, next, prev])
@@ -61,14 +62,14 @@ export function Slideshow({ slides, interval = 3000, subtitle = "" }: SlideshowP
 
   return (
     <>
-      <div 
-        className="group relative my-6 not-prose" 
-        onMouseEnter={() => setIsPaused(true)} 
+      <div
+        className={`group relative not-prose ${contained ? '' : 'my-6'}`}
+        onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
         {/* Container principal cliquable pour zoomer */}
-        <div 
-          className="relative aspect-[16/9] w-full overflow-hidden rounded-3xl cursor-zoom-in group/image"
+        <div
+          className={`relative aspect-[16/9] w-full overflow-hidden ${contained ? 'rounded-lg ring ring-1 ring-zinc-900/10 dark:ring-white/10' : 'rounded-3xl'} cursor-zoom-in group/image`}
           onClick={() => setIsZoomed(true)}
         >
           {/* Overlay "Agrandir" au survol */}
@@ -106,44 +107,44 @@ export function Slideshow({ slides, interval = 3000, subtitle = "" }: SlideshowP
         </div>
 
         {/* Progress & Counter */}
-        <div className="mt-4 flex items-center justify-between px-2">
+        <div className={`mt-4 flex items-center justify-between px-2 ${contained ? 'hidden' : ''}`}>
           <div className="md:flex gap-1.5 hidden">
             {Array.from({ length: Math.min(slides.length, 10) }).map((_, i) => {
               const isActive = slides.length < 10 ? i === currentIndex : Math.floor((currentIndex / slides.length) * 10) === i
               return (
                 <div
                   key={i}
-                  className={`h-1.5 w-1.5 rounded-full transition-all ${
-                    isActive ? 'w-4 bg-zinc-800 dark:bg-zinc-200' : 'bg-zinc-300 dark:bg-zinc-700'
-                  }`}
+                  className={`h-1.5 w-1.5 rounded-full transition-all ${isActive ? 'w-4 bg-zinc-800 dark:bg-zinc-200' : 'bg-zinc-300 dark:bg-zinc-700'
+                    }`}
                 />
               )
             })}
           </div>
           <span className="text-xs font-medium tabular-nums text-zinc-500 leading-relaxed">
-             {isPaused && !isZoomed ? <span className='opacity-75'>Paused | </span> : <span className='opacity-75'>{subtitle} | </span>}
-             {currentIndex + 1} <span className="opacity-75">/</span> {slides.length}
+            {isPaused && !isZoomed ? <span className='opacity-75'>Paused | </span> : <span className='opacity-75'>{subtitle} | </span>}
+            {currentIndex + 1} <span className="opacity-75">/</span> {slides.length}
           </span>
         </div>
       </div>
 
       {/* --- Lightbox du Zoom (Copie de ta Figure) --- */}
       {isZoomed && <>
-        <div 
+        <div
           onClick={() => setIsZoomed(false)}
           className="not-prose fixed inset-0 z-[100] bg-white/65 dark:bg-zinc-900/95 backdrop-blur-3xl p-4 md:p-20 flex items-center justify-center cursor-zoom-out animate-fade-in"
         >
 
           <div className="relative w-full h-full flex flex-col items-center justify-center">
-            <Image 
-              src={slides[currentIndex]} 
+            <Image
+              src={slides[currentIndex]}
               alt={`Slide ${currentIndex + 1} zoomed`}
               className="max-h-full max-w-full block animate-scale-in ring-1 ring-zinc-900/10 rounded-lg w-auto"
               onLoad={(e) => {
                 setHeight(e.currentTarget.naturalHeight)
-                setAspectRatio(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight)}}
+                setAspectRatio(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight)
+              }}
               height={height}
-              style={{aspectRatio: `${aspectRatio} / 1`}}
+              style={{ aspectRatio: `${aspectRatio} / 1` }}
               priority
             />
             <div className="absolute bottom-0 md:-bottom-19 flex items-center justify-between p-4 z-550 gap-4">

@@ -136,7 +136,7 @@ function MobileNavigation(
             <MobileNavItem href="/">{t('home')}</MobileNavItem>
             <MobileNavItem href="/projects">{t('projects')}</MobileNavItem>
             <MobileNavItem href="/articles">{t('articles')}</MobileNavItem>
-            <MobileNavItem href="/speaking">{t('fun')}</MobileNavItem>
+            {/* <MobileNavItem href="/speaking">{t('fun')}</MobileNavItem> */}
             {/* <MobileNavItem href="/uses">Legal mentions</MobileNavItem> */}
           </ul>
         </nav>
@@ -187,7 +187,7 @@ function DesktopNavigation(props: React.ComponentPropsWithoutRef<'nav'>) {
         <NavItem href="/">{t('home')}</NavItem>
         <NavItem href="/projects">{t('projects')}</NavItem>
         <NavItem href="/articles">{t('articles')}</NavItem>
-        <NavItem href="/speaking">{t('fun')}</NavItem>
+        {/* <NavItem href="/speaking">{t('fun')}</NavItem> */}
         {/* <NavItem href="/uses">Legal mentions</NavItem> */}
       </ul>
     </nav>
@@ -222,10 +222,10 @@ function LanguageToggle() {
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
-  
+
   const switchLanguage = () => {
     const nextLocale = locale === 'en' ? 'fr' : 'en';
-    
+
     // Le routeur de next-intl fait le travail proprement, sans remplacer tout le chemin
     router.replace(pathname, { locale: nextLocale });
   };
@@ -306,7 +306,7 @@ function Avatar({
   )
 }
 
-export function Header({locale}: {locale: boolean}) {
+export function Header({ locale }: { locale: boolean }) {
   const pathname = usePathname()
   let isHomePage = pathname === '/' || pathname === '/en' || pathname === '/fr'
 
